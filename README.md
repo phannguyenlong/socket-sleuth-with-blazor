@@ -4,6 +4,10 @@
 1. `[NEW] src\main\java\helper`: Migrate unpack (decode) and pack (encode) Blazor message from tool Blazor Traffic Processor
 2. `[Update] src\main\java\WebSocketMessageHandler.java` - Function `handleBinaryMessageReceived`: write code for handle websocket message in binary. Only code for match and replace function to use in cooperation with Blazor message.
 
+## demo video
+
+https://github.com/phannguyenlong/socket-sleuth-with-blazor/assets/44134735/04d0ae0e-5a94-4e27-b931-6d70baad3894
+
 # SocketSleuth: Burp Suite Extension for websocket testing
 ## Overview
 SocketSleuth aims to enhance Burp Suite's websocket testing capabilities and make testing websocket based applications easier. This extension is currently in beta release but contains some powerful features such as a new websocket focused history tab, match and replace rules for websockets, an intruder like utility, and a message autorepeater for authorization testing.
