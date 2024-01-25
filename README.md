@@ -1,8 +1,8 @@
 ![https://snyk.io/test/github/snyk/socketsleuth/badge.svg](https://snyk.io/test/github/snyk/socketsleuth/badge.svg)
 
-# Note: Addition coding in compare with previous tool
-1. [NEW] src\main\java\helper: Migrate unpack (decode) and pack (encode) Blazor message from tool Blazor Traffic Processor
-2. [Update] src\main\java\WebSocketMessageHandler.java - Function `handleBinaryMessageReceived`: write code for handle websocket message in binary. Only code for match and replace function to use in cooperation with Blazor message.
+# LONGPN13 Note: Addition coding in compare with previous tool
+1. `[NEW] src\main\java\helper`: Migrate unpack (decode) and pack (encode) Blazor message from tool Blazor Traffic Processor
+2. `[Update] src\main\java\WebSocketMessageHandler.java` - Function `handleBinaryMessageReceived`: write code for handle websocket message in binary. Only code for match and replace function to use in cooperation with Blazor message.
 
 # SocketSleuth: Burp Suite Extension for websocket testing
 ## Overview
