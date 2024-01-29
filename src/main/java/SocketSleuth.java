@@ -16,11 +16,15 @@
 import burp.api.montoya.BurpExtension;
 import burp.api.montoya.MontoyaApi;
 import burp.api.montoya.core.ByteArray;
+import burp.api.montoya.extension.ExtensionUnloadingHandler;
 import burp.api.montoya.ui.UserInterface;
 import burp.api.montoya.ui.editor.HttpRequestEditor;
 import burp.api.montoya.ui.editor.WebSocketMessageEditor;
+import helper.BTPConstants;
+import providers.*;
 import socketsleuth.WebSocketInterceptionRulesTableModel;
 import socketsleuth.utils.CommentManager;
+import views.BTPView;
 import websocket.MessageProvider;
 
 import javax.swing.*;
@@ -39,7 +43,7 @@ import java.util.Map;
 
 import static burp.api.montoya.ui.editor.EditorOptions.READ_ONLY;
 
-public class SocketSleuth implements BurpExtension {
+public class SocketSleuth implements BurpExtension, ExtensionUnloadingHandler {
 
     MontoyaApi api;
     JSONRPCResponseMonitor responseMonitor;
@@ -69,11 +73,17 @@ public class SocketSleuth implements BurpExtension {
         this.socketProvider = new MessageProvider(api);
         this.webSocketAutoRepeater = new WebSocketAutoRepeater(api, this.wsConnections);
 
-        api.extension().setName("SocketSleuth");
+        api.extension().setName("SocketSleuth with Blazor");
         this.socketSleuthTabPanel = constructBurpUi();
 
         api.userInterface().registerSuiteTab("SocketSleuth", this.socketSleuthTabPanel);
+        //===============Blazor traffic processor part=======================
+        BTPView burpTab = new BTPView(this.api);
+        this.api.userInterface().registerSuiteTab(BTPConstants.CAPTION, burpTab);
+        BTPWebSocketEditorProvider webSocketEditorProvider = new BTPWebSocketEditorProvider(this.api);
+        this.api.userInterface().registerWebSocketMessageEditorProvider(webSocketEditorProvider);
 
+        //==============continue=====================
         // Create handler for new websocket connections
         // The table might not exist yet, check if there is bugs
         WebSocketCreationHandler webSocketCreationHandler = new WebSocketCreationHandler(api,
@@ -438,6 +448,7 @@ public class SocketSleuth implements BurpExtension {
         uiForm.getSocketConnectionSplit().setRightComponent(upgradeRequestViewer.uiComponent());
 
         WebSocketMessageEditor messageViewer = ui.createWebSocketMessageEditor(READ_ONLY);
+        // messageViewer.regist
         uiForm.setStreamVIewSplitPane(messageViewer.uiComponent());
 
         // Set a dummy model for WebSocket Message / steams with no data.
@@ -552,5 +563,11 @@ public class SocketSleuth implements BurpExtension {
                 }
             }
         });
+    }
+
+    @Override
+    public void extensionUnloaded() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'extensionUnloaded'");
     }
 }
