@@ -82,6 +82,9 @@ public class SocketSleuth implements BurpExtension, ExtensionUnloadingHandler {
         this.api.userInterface().registerSuiteTab(BTPConstants.CAPTION, burpTab);
         BTPWebSocketEditorProvider webSocketEditorProvider = new BTPWebSocketEditorProvider(this.api);
         this.api.userInterface().registerWebSocketMessageEditorProvider(webSocketEditorProvider);
+        // Setup the right-click menu items
+        BTPContextMenuItemsProvider menuItemsProvider = new BTPContextMenuItemsProvider(this.api, burpTab);
+        this.api.userInterface().registerContextMenuItemsProvider(menuItemsProvider);
 
         //==============continue=====================
         // Create handler for new websocket connections

@@ -64,7 +64,7 @@ public class BTPContextMenuItemsProvider implements ContextMenuItemsProvider {
 
         // Send to BTP tab for ad-hoc serialization
         JMenuItem sendToBTP = new JMenuItem();
-        sendToBTP.setText(BTPConstants.SEND_TO_BTP_CAPTION);
+        sendToBTP.setText("aaaaaaaaaaaaa");
         sendToBTP.addActionListener(e -> {
             HttpRequestResponse selection;
             // Selected inside the HTTP request/response editor
@@ -102,7 +102,24 @@ public class BTPContextMenuItemsProvider implements ContextMenuItemsProvider {
 
             this.sendSelectionToBTP(selection);
         });
+
+        // send to BTP tab but concat with previous
+        JMenuItem concatSendToBTP = new JMenuItem();
+        concatSendToBTP.setText("Send BTP Tab (concat)");
+        concatSendToBTP.addActionListener(e -> {
+            WebSocketMessage selection;
+
+            if(event.selectedWebSocketMessages().isEmpty() && event.messageEditorWebSocket().isPresent()){
+                selection = event.messageEditorWebSocket().get().webSocketMessage();
+            }else{ // Selected on WS history
+                selection = event.selectedWebSocketMessages().get(0);
+            }
+
+            this.concatSendSelectionToBTP(selection);
+        });
+
         menuItems.add(sendToBTP);
+        menuItems.add(concatSendToBTP);
         return menuItems;
     }
     /**
@@ -135,4 +152,14 @@ public class BTPContextMenuItemsProvider implements ContextMenuItemsProvider {
         this.btpTab.setEditorText(selection.payload());
     }
 
+    private void concatSendSelectionToBTP(WebSocketMessage selection) {
+        if (selection.upgradeRequest().url() != null && !selection.upgradeRequest().url().contains(BTPConstants.BLAZOR_URL)) {
+            if (!selection.upgradeRequest().hasHeader(BTPConstants.SIGNALR_HEADER)) {
+                this._logging.logToError("[-] sendSelectionToBTP - Selected message is not BlazorPack.");
+                return;
+            }
+        }
+
+        this.btpTab.concatEditorText(selection.payload());
+    }
 }

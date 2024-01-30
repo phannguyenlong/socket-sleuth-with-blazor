@@ -124,6 +124,11 @@ public class BTPView extends JComponent {
         this.editor.setContents(text);
     }
 
+    public void concatEditorText(ByteArray text) {
+        ByteArray newContent = this.editor.getContents().withAppended(text);
+        this.editor.setContents(newContent);
+    }
+
     /**
      * Called when the drop-down menu item changes
      * Used for swapping the button label from Serialize <-> Deserialize
