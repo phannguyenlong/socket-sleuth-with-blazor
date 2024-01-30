@@ -31,6 +31,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 /**
  * Class to store and process "Invocation" blazorpack messages
@@ -231,10 +232,17 @@ public class InvocationMessage extends GenericMessage {
                 case BINARY:
                     int binHeader = unpacker.unpackBinaryHeader();
                     byte[] bytes = unpacker.readPayload(binHeader);
+                    String decode = new String(bytes);
+                    
                     StringBuilder hex = new StringBuilder();
                     for (byte b : bytes) {
                         hex.append(String.format(BTPConstants.HEX_FORMAT, b));
                     }
+                    // clean up
+                    String clean = decode.replaceAll("\\P{Print}", "");
+                    clean = clean.replace("\\", "\\\\");
+                    clean = clean.replace("\"", "\\\"");
+                    args.put(new JSONObject("{\"CleanByte\": \"" + clean + "\"}"));
                     args.put(new JSONObject("{\"BinaryHeader\":" + binHeader + ",\"BinaryBytes\":\"" + hex + "\"}"));
                     break;
                 default:
