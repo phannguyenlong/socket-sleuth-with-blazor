@@ -108,14 +108,24 @@ public class BTPContextMenuItemsProvider implements ContextMenuItemsProvider {
         concatSendToBTP.setText("Send BTP Tab (concat)");
         concatSendToBTP.addActionListener(e -> {
             WebSocketMessage selection;
-
+            List<WebSocketMessage> selectedWesSock = event.selectedWebSocketMessages(); 
+            
+            // handle selection
             if(event.selectedWebSocketMessages().isEmpty() && event.messageEditorWebSocket().isPresent()){
                 selection = event.messageEditorWebSocket().get().webSocketMessage();
+                this.concatSendSelectionToBTP(selection); // send for 1 messages
             }else{ // Selected on WS history
-                selection = event.selectedWebSocketMessages().get(0);
+                // case select only 1 message
+                if (selectedWesSock.size() == 1) {
+                    selection = event.selectedWebSocketMessages().get(0);
+                    this.concatSendSelectionToBTP(selection);
+                } else {
+                    // case select many messaages
+                    this.concatSendSelectionToBTP(selectedWesSock);
+                }
             }
 
-            this.concatSendSelectionToBTP(selection);
+            // this.concatSendSelectionToBTP(selection);
         });
 
         menuItems.add(sendToBTP);
@@ -161,5 +171,19 @@ public class BTPContextMenuItemsProvider implements ContextMenuItemsProvider {
         }
 
         this.btpTab.concatEditorText(selection.payload());
+    }
+
+    private void concatSendSelectionToBTP(List<WebSocketMessage> selections) {
+        // the go in reverse
+        for (int i = selections.size() - 1; i >= 0  ; i--) {
+            WebSocketMessage selection = selections.get(i);
+            if (selection.upgradeRequest().url() != null && !selection.upgradeRequest().url().contains(BTPConstants.BLAZOR_URL)) {
+                if (!selection.upgradeRequest().hasHeader(BTPConstants.SIGNALR_HEADER)) {
+                    this._logging.logToError("[-] sendSelectionToBTP - Selected message is not BlazorPack.");
+                    return;
+                }
+            }
+            this.btpTab.concatEditorText(selection.payload());
+        }
     }
 }
