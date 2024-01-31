@@ -3,6 +3,8 @@
 # LONGPN13 Note: Addition coding in compare with previous tool
 1. `[NEW] src\main\java\helper`: Migrate unpack (decode) and pack (encode) Blazor message from tool Blazor Traffic Processor
 2. `[Update] src\main\java\WebSocketMessageHandler.java` - Function `handleBinaryMessageReceived`: write code for handle websocket message in binary. Only code for match and replace function to use in cooperation with Blazor message.
+3. Modify BTP context menu: Add "Send to BTP Tab (concat)" options to send multiple tab
+4. Add tamper Money script for frontend extractor
 
 ## demo video
 
